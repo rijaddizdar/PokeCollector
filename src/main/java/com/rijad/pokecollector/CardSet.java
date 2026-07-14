@@ -29,4 +29,11 @@ public class CardSet {
     public Instant getReleaseDate() {
         return releaseDate;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
 }
