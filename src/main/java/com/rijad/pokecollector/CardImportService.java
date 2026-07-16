@@ -12,9 +12,11 @@ import java.time.Instant;
 public class CardImportService {
     private final CardRepository cardRepository;
     private final RestClient restClient=RestClient.create();
+    private final CardSetRepository cardSetRepository;
 
-    public CardImportService(CardRepository cardRepository) {
+    public CardImportService(CardRepository cardRepository, CardSetRepository cardSetRepository) {
         this.cardRepository = cardRepository;
+        this.cardSetRepository = cardSetRepository;
     }
     public CardDto fetchCard(String externalId){
         String url="https://api.tcgdex.net/v2/en/cards/"+externalId;
@@ -44,9 +46,18 @@ public class CardImportService {
         return card;
     }
     public CardSet toSet(SetDto dto){
-        CardSet set=new CardSet();
-        set.setName(dto.name());
-        set.setExternalId(dto.id());
-        return set;
+        return cardSetRepository.findByExternalId(dto.id())
+                .orElseGet(()->{
+                    CardSet set=new CardSet();
+                    set.setName(dto.name());
+                    set.setExternalId(dto.id());
+                    return cardSetRepository.save(set);
+                });
+    }
+    public Card importCard(String externalId){
+        CardDto dto= fetchCard(externalId);
+        Card card=toCard(dto);
+        cardRepository.save(card);
+        return card;
     }
 }

@@ -8,13 +8,13 @@ import java.time.Instant;
 public class CardSet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @Column(unique = true)
     private String externalId;
     private String name;
     private Instant releaseDate = Instant.now();
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
