@@ -3,6 +3,7 @@ package com.rijad.pokecollector;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 public class CardSet {
@@ -12,7 +13,7 @@ public class CardSet {
     @Column(unique = true)
     private String externalId;
     private String name;
-    private Instant releaseDate = Instant.now();
+    private LocalDate releaseDate;
 
     public long getId() {
         return id;
@@ -26,7 +27,7 @@ public class CardSet {
         return name;
     }
 
-    public Instant getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
     public void setName(String name) {

@@ -1,4 +1,4 @@
 package com.rijad.pokecollector.dto;
 
-public record TcgPlayerDto(VariantDto normal){
+public record TcgPlayerDto(VariantDto normal, VariantDto holofoil){
 }

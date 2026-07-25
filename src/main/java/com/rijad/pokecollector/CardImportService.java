@@ -2,6 +2,8 @@ package com.rijad.pokecollector;
 
 import com.rijad.pokecollector.dto.CardDto;
 import com.rijad.pokecollector.dto.SetDto;
+import com.rijad.pokecollector.dto.TcgPlayerDto;
+import com.rijad.pokecollector.dto.VariantDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -34,9 +36,13 @@ public class CardImportService {
         card.setRarity(dto.rarity());
         card.setImageUrl(dto.image());
         Double price=null;
-        if(dto.pricing()!=null && dto.pricing().tcgplayer()!=null && dto.pricing().tcgplayer().normal()!=null){
-            price=dto.pricing().tcgplayer().normal().marketPrice();
-            card.setPriceUpdatedAt(Instant.now());
+        if(dto.pricing()!=null && dto.pricing().tcgplayer()!=null){
+            TcgPlayerDto tcg=dto.pricing().tcgplayer();
+            VariantDto variant= tcg.normal() !=null ? tcg.normal() : tcg.holofoil();
+            if(variant!=null){
+                price=variant.marketPrice();
+                card.setPriceUpdatedAt(Instant.now());
+            }
         }
         card.setPrice(price);
         if(dto.set()!=null){
