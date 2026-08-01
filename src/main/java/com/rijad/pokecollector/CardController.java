@@ -1,6 +1,7 @@
 package com.rijad.pokecollector;
 
 
+import com.rijad.pokecollector.dto.CardSummaryDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,10 @@ public class CardController {
     @GetMapping("/{id}")
     public Card findById(@PathVariable Long id) {
         return cardRepository.findById(id).orElse(null);
+    }
+    @GetMapping("/search")
+    public List<CardSummaryDto> search(@RequestParam String name, @RequestParam String number){
+        return cardImportService.searchCards(name, number);
     }
 
 }

@@ -95,4 +95,7 @@ public class Card {
     public void setSet(CardSet set) {
         this.set = set;
     }
+    public void setId(long id) {
+        this.id = id;
+    }
 }

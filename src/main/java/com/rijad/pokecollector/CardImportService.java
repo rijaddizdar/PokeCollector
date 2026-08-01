@@ -1,13 +1,12 @@
 package com.rijad.pokecollector;
 
-import com.rijad.pokecollector.dto.CardDto;
-import com.rijad.pokecollector.dto.SetDto;
-import com.rijad.pokecollector.dto.TcgPlayerDto;
-import com.rijad.pokecollector.dto.VariantDto;
+import com.rijad.pokecollector.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Service
@@ -27,6 +26,23 @@ public class CardImportService {
                 .uri(url)
                 .retrieve()
                 .body(CardDto.class);
+    }
+    private String normalize(String s){
+        return s
+                .trim()
+                .toUpperCase()
+                .split("/")[0]
+                .replaceFirst("^0+","");
+    }
+    public List<CardSummaryDto> searchCards(String name, String number){
+        CardSummaryDto[] hits= restClient.get()
+                .uri("https://api.tcgdex.net/v2/en/cards?name={n}", name)
+                .retrieve()
+                .body(CardSummaryDto[].class);
+        String target=normalize(number);
+        return Arrays.stream(hits)
+                .filter(c ->normalize(c.localId()).equals(target))
+                .toList();
     }
     public Card toCard(CardDto dto){
         Card card=new Card();
@@ -63,7 +79,9 @@ public class CardImportService {
     public Card importCard(String externalId){
         CardDto dto= fetchCard(externalId);
         Card card=toCard(dto);
-        cardRepository.save(card);
-        return card;
+        cardRepository.findByExternalId(dto.id())
+                .ifPresent(existing-> card.setId(existing.getId()));
+        return cardRepository.save(card);
+
     }
 }
