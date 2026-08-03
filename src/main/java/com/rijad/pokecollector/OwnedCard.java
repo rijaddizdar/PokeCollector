@@ -7,22 +7,38 @@ import java.time.Instant;
 public class OwnedCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
+    private int id;
     @ManyToOne
     Card card;
     @ManyToOne
     Owner owner;
-    int AmountOfCards;
-    Instant ScannedDate= Instant.now();
+    int amountOfCards;
     String condition;
     public OwnedCard() {}
-    public OwnedCard(Card card, Owner owner, int AmountOfCards, Instant ScannedDate, String condition) {
+    public OwnedCard(Card card, Owner owner, int amountOfCards, String condition) {
         this.card = card;
         this.owner = owner;
-        this.AmountOfCards = AmountOfCards;
-        this.ScannedDate = ScannedDate;
+        this.amountOfCards = amountOfCards;
         this.condition = condition;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public Card getCard() {
+        return card;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public int getAmountOfCards() {
+        return amountOfCards;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
 }

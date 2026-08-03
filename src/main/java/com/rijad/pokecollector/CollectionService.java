@@ -1,0 +1,39 @@
+package com.rijad.pokecollector;
+
+
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+
+@Service
+public class CollectionService {
+    private final OwnedCardRepository ownedCardRepository;
+    private final OwnerRepository ownerRepository;
+    private final CardRepository cardRepository;
+    private final CardImportService cardImportService;
+    public CollectionService(OwnedCardRepository ownedCardRepository,OwnerRepository ownerRepository, CardRepository cardRepository,  CardImportService cardImportService) {
+        this.ownedCardRepository = ownedCardRepository;
+        this.ownerRepository = ownerRepository;
+        this.cardRepository = cardRepository;
+        this.cardImportService = cardImportService;
+    }
+    public void addToCollection(int ownerId, String externalId, int amount, String condition) {
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(()-> new RuntimeException("Owner not found: " + ownerId));
+        Card card= cardImportService.importCard(externalId);
+        OwnedCard ownedCard=new OwnedCard(card,owner,amount,condition);
+        ownedCardRepository.save(ownedCard);
+    }
+    public Double totalValue(int ownerId) {
+        List<OwnedCard> ownedCards = ownedCardRepository.findByOwnerId(ownerId);
+        double total = 0.0;
+        for (OwnedCard ownedCard : ownedCards) {
+            Double price=ownedCard.getCard().getPrice();
+            if(price!=null) {
+                total+=price*ownedCard.getAmountOfCards();
+            }
+        }
+        return total;
+    }
+}
