@@ -2,8 +2,9 @@ package com.rijad.pokecollector;
 
 
 import com.rijad.pokecollector.dto.OwnedCardDto;
-import com.rijad.pokecollector.dto.OwnerDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class CollectionService {
     }
     public void addToCollection(int ownerId, String externalId, int amount, Condition condition) {
         Owner owner = ownerRepository.findById(ownerId)
-                .orElseThrow(()-> new RuntimeException("Owner not found: " + ownerId));
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found: " + ownerId));
         Card card= cardImportService.importCard(externalId);
         OwnedCard ownedCard=new OwnedCard(card,owner,amount,condition);
         ownedCardRepository.save(ownedCard);
