@@ -48,7 +48,7 @@ public class CollectionService {
             Card card=ownedCard.getCard();
             Double price=card.getPrice();
             String condition=ownedCard.getCondition().toString();
-            OwnedCardDto ownedCardDto= new OwnedCardDto(card.getPname(), card.getExternalId(),price, ownedCard.getAmountOfCards(),condition);
+            OwnedCardDto ownedCardDto= new OwnedCardDto(ownedCard.getId(), card.getPname(), card.getExternalId(),price, ownedCard.getAmountOfCards(),condition);
             ownedCardDtos.add(ownedCardDto);
         }
         return ownedCardDtos;
@@ -58,5 +58,11 @@ public class CollectionService {
         OwnedCard ownedCard=ownedCardRepository.findByOwnerIdAndId(ownerId,ownedCardId)
                         .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "You don`t own this card" + ownedCardId));
         ownedCard.setAmountOfCards(amount);
+    }
+
+    public void deleteOwnedCard(int ownerId, int ownedCardId){
+        OwnedCard ownedCard=ownedCardRepository.findByOwnerIdAndId(ownerId,ownedCardId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NO_CONTENT, "The card was not found" + ownedCardId));
+        ownedCardRepository.delete(ownedCard);
     }
 }

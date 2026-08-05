@@ -30,4 +30,9 @@ public class CollectionController {
     collectionService.updateCardAmount(ownerId,ownedCardId,amount);
     }
 
+    @DeleteMapping("/{ownerId}/cards/{ownedCardId}")
+    public void deleteOwnedCard(@PathVariable int ownerId, @PathVariable int ownedCardId){
+        collectionService.deleteOwnedCard(ownerId,ownedCardId);
+    }
+
 }
