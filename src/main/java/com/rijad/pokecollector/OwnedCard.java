@@ -41,4 +41,7 @@ public class OwnedCard {
     public Condition getCondition() {
         return condition;
     }
+    public void setAmountOfCards(int amountOfCards) {
+        this.amountOfCards = amountOfCards;
+    }
 }

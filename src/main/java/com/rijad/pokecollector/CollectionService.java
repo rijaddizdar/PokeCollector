@@ -2,6 +2,7 @@ package com.rijad.pokecollector;
 
 
 import com.rijad.pokecollector.dto.OwnedCardDto;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,5 +52,11 @@ public class CollectionService {
             ownedCardDtos.add(ownedCardDto);
         }
         return ownedCardDtos;
+    }
+    @Transactional
+    public void updateCardAmount(int ownerId, int ownedCardId, int amount){
+        OwnedCard ownedCard=ownedCardRepository.findByOwnerIdAndId(ownerId,ownedCardId)
+                        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "You don`t own this card" + ownedCardId));
+        ownedCard.setAmountOfCards(amount);
     }
 }

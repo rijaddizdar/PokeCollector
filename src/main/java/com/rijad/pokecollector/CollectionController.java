@@ -25,5 +25,9 @@ public class CollectionController {
     public List<OwnedCardDto> getCards(@PathVariable int ownerId){
         return collectionService.getOwnedCards(ownerId);
     }
+    @PatchMapping("/{ownerId}/cards/{ownedCardId}")
+    public void updateAmount(@PathVariable int ownerId, @PathVariable int ownedCardId, @RequestParam int amount){
+    collectionService.updateCardAmount(ownerId,ownedCardId,amount);
+    }
 
 }
