@@ -56,13 +56,13 @@ public class CollectionService {
     @Transactional
     public void updateCardAmount(int ownerId, int ownedCardId, int amount){
         OwnedCard ownedCard=ownedCardRepository.findByOwnerIdAndId(ownerId,ownedCardId)
-                        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "You don`t own this card" + ownedCardId));
+                        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "You don`t own this card: " + ownedCardId));
         ownedCard.setAmountOfCards(amount);
     }
 
     public void deleteOwnedCard(int ownerId, int ownedCardId){
         OwnedCard ownedCard=ownedCardRepository.findByOwnerIdAndId(ownerId,ownedCardId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NO_CONTENT, "The card was not found" + ownedCardId));
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "The card was not found: " + ownedCardId));
         ownedCardRepository.delete(ownedCard);
     }
 }

@@ -1,6 +1,7 @@
 package com.rijad.pokecollector;
 
 import com.rijad.pokecollector.dto.OwnedCardDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class CollectionController {
     }
 
     @DeleteMapping("/{ownerId}/cards/{ownedCardId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOwnedCard(@PathVariable int ownerId, @PathVariable int ownedCardId){
         collectionService.deleteOwnedCard(ownerId,ownedCardId);
     }
