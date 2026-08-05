@@ -21,7 +21,7 @@ public class CollectionService {
         this.cardRepository = cardRepository;
         this.cardImportService = cardImportService;
     }
-    public void addToCollection(int ownerId, String externalId, int amount, String condition) {
+    public void addToCollection(int ownerId, String externalId, int amount, Condition condition) {
         Owner owner = ownerRepository.findById(ownerId)
                 .orElseThrow(()-> new RuntimeException("Owner not found: " + ownerId));
         Card card= cardImportService.importCard(externalId);
@@ -45,7 +45,8 @@ public class CollectionService {
         for (OwnedCard ownedCard : ownedCards) {
             Card card=ownedCard.getCard();
             Double price=card.getPrice();
-            OwnedCardDto ownedCardDto= new OwnedCardDto(card.getPname(), card.getExternalId(),price, ownedCard.getAmountOfCards(),ownedCard.getCondition());
+            String condition=ownedCard.getCondition().toString();
+            OwnedCardDto ownedCardDto= new OwnedCardDto(card.getPname(), card.getExternalId(),price, ownedCard.getAmountOfCards(),condition);
             ownedCardDtos.add(ownedCardDto);
         }
         return ownedCardDtos;

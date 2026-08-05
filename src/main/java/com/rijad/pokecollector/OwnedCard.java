@@ -1,7 +1,6 @@
 package com.rijad.pokecollector;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 @Entity
 public class OwnedCard {
@@ -13,9 +12,10 @@ public class OwnedCard {
     @ManyToOne
     Owner owner;
     int amountOfCards;
-    String condition;
+    @Enumerated(EnumType.STRING)
+    Condition condition;
     public OwnedCard() {}
-    public OwnedCard(Card card, Owner owner, int amountOfCards, String condition) {
+    public OwnedCard(Card card, Owner owner, int amountOfCards, Condition condition) {
         this.card = card;
         this.owner = owner;
         this.amountOfCards = amountOfCards;
@@ -38,7 +38,7 @@ public class OwnedCard {
         return amountOfCards;
     }
 
-    public String getCondition() {
+    public Condition getCondition() {
         return condition;
     }
 }
