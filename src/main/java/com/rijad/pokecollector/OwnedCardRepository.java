@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface OwnedCardRepository extends JpaRepository<OwnedCard,Integer> {
     List<OwnedCard> findByOwnerId(int ownerId);
     Optional<OwnedCard> findByOwnerIdAndId(int ownerId, int ownedCardId);
+    Optional<OwnedCard> findByCardIdAndOwnerIdAndCondition(long cardId, int ownerId, Condition condition);
 }

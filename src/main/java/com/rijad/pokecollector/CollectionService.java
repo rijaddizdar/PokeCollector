@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -27,8 +28,16 @@ public class CollectionService {
         Owner owner = ownerRepository.findById(ownerId)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found: " + ownerId));
         Card card= cardImportService.importCard(externalId);
-        OwnedCard ownedCard=new OwnedCard(card,owner,amount,condition);
-        ownedCardRepository.save(ownedCard);
+        Optional<OwnedCard> ownedCardExisting = ownedCardRepository.findByCardIdAndOwnerIdAndCondition(card.getId(), ownerId, condition);
+        if(ownedCardExisting.isPresent()) {
+            OwnedCard ownedCard= ownedCardExisting.get();
+            ownedCard.setAmountOfCards(ownedCard.getAmountOfCards() + amount);
+            ownedCardRepository.save(ownedCard);
+        }
+        else {
+            OwnedCard ownedCard=new OwnedCard(card,owner,amount,condition);
+            ownedCardRepository.save(ownedCard);
+        }
     }
     public Double totalValue(int ownerId) {
         List<OwnedCard> ownedCards = ownedCardRepository.findByOwnerId(ownerId);
