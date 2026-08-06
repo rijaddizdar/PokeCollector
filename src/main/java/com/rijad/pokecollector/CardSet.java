@@ -2,7 +2,6 @@ package com.rijad.pokecollector;
 
 import jakarta.persistence.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -14,6 +13,7 @@ public class CardSet {
     private String externalId;
     private String name;
     private LocalDate releaseDate;
+    private int cardCount;
 
     public long getId() {
         return id;
@@ -35,6 +35,12 @@ public class CardSet {
     }
     public void setExternalId(String externalId) {
         this.externalId = externalId;
+    }
+    public int getCardCount() {
+        return cardCount;
+    }
+    public void setCardCount(int cardCount) {
+        this.cardCount = cardCount;
     }
 
 }

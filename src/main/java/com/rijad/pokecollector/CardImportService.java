@@ -59,7 +59,10 @@ public class CardImportService {
         Double price=null;
         if(dto.pricing()!=null && dto.pricing().tcgplayer()!=null){
             TcgPlayerDto tcg=dto.pricing().tcgplayer();
-            VariantDto variant= tcg.normal() !=null ? tcg.normal() : tcg.holofoil();
+            VariantDto variant= tcg.getVariants().get("normal");
+            if(variant==null && !tcg.getVariants().isEmpty()){
+                variant= tcg.getVariants().values().iterator().next();
+            }
             if(variant!=null){
                 price=variant.marketPrice();
                 card.setPriceUpdatedAt(Instant.now());
@@ -78,6 +81,7 @@ public class CardImportService {
                     CardSet set=new CardSet();
                     set.setName(dto.name());
                     set.setExternalId(dto.id());
+                    set.setCardCount(dto.cardCount().total());
                     return cardSetRepository.save(set);
                 });
     }
