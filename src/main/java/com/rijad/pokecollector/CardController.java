@@ -33,5 +33,9 @@ public class CardController {
     public List<CardSummaryDto> search(@RequestParam String name, @RequestParam String number){
         return cardImportService.searchCards(name, number);
     }
+    @PostMapping("/refresh-prices")
+    public int refreshAllPrices(){
+        return cardImportService.refreshAllPrices();
+    }
 
 }
