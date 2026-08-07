@@ -3,6 +3,8 @@ package com.rijad.pokecollector;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Card {
@@ -19,6 +21,8 @@ public class Card {
     private Instant priceUpdatedAt;
     @ManyToOne
     private CardSet set;
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CardVariant> variants=new ArrayList<>();
 
     public Card() {}
     public Card(long id, String pname, Double price, CardSet set) {
@@ -38,6 +42,10 @@ public class Card {
 
     public Double getPrice() {
         return price;
+    }
+
+    public List<CardVariant> getVariants() {
+        return variants;
     }
 
     public CardSet getSet() {
@@ -95,7 +103,5 @@ public class Card {
     public void setSet(CardSet set) {
         this.set = set;
     }
-    public void setId(long id) {
-        this.id = id;
-    }
+
 }

@@ -2,14 +2,18 @@ package com.rijad.pokecollector;
 
 import com.rijad.pokecollector.dto.*;
 import org.slf4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
@@ -50,7 +54,7 @@ public class CardImportService {
                 .toList();
     }
     public Card toCard(CardDto dto){
-        Card card=new Card();
+        Card card=cardRepository.findByExternalId(dto.id()).orElseGet(Card::new);
         card.setExternalId(dto.id());
         card.setPname(dto.name());
         card.setNumber(dto.localId());
@@ -67,6 +71,24 @@ public class CardImportService {
                 price=variant.marketPrice();
                 card.setPriceUpdatedAt(Instant.now());
             }
+            for(Map.Entry<String,VariantDto> entry: tcg.getVariants().entrySet()){
+                String name=entry.getKey();
+                VariantDto incoming=entry.getValue();
+
+                Optional<CardVariant> existing= card.getVariants().stream()
+                        .filter(v->name.equals(v.getVariantName()))
+                        .findFirst();
+                if(existing.isPresent()){
+                    CardVariant existingVariant=existing.get();
+                    existingVariant.setPrice(incoming.marketPrice());
+                    existingVariant.setUpdatedPriceAt(Instant.now());
+                }
+                else{
+                    CardVariant newVariant=new CardVariant(card,name,incoming.marketPrice(),Instant.now());
+                    card.getVariants().add(newVariant);
+                }
+            }
+
         }
         card.setPrice(price);
         if(dto.set()!=null){
@@ -85,14 +107,14 @@ public class CardImportService {
                     return cardSetRepository.save(set);
                 });
     }
+    @Transactional
     public Card importCard(String externalId){
         CardDto dto= fetchCard(externalId);
         Card card=toCard(dto);
-        cardRepository.findByExternalId(dto.id())
-                .ifPresent(existing-> card.setId(existing.getId()));
         return cardRepository.save(card);
 
     }
+    @Transactional
     @Scheduled(fixedDelay=6, timeUnit = TimeUnit.HOURS)
     public int refreshAllPrices(){
         List<Card> all=cardRepository.findAll();
