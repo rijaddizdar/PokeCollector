@@ -1,6 +1,7 @@
 package com.rijad.pokecollector;
 
 import com.rijad.pokecollector.dto.OwnedCardDto;
+import com.rijad.pokecollector.dto.SetCompletionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,10 @@ public class CollectionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOwnedCard(@PathVariable int ownerId, @PathVariable int ownedCardId){
         collectionService.deleteOwnedCard(ownerId,ownedCardId);
+    }
+    @GetMapping("/{ownerId}/sets")
+    public List<SetCompletionDto> setCompletion(@PathVariable int ownerId){
+        return collectionService.getSetCompletions(ownerId);
     }
 
 }

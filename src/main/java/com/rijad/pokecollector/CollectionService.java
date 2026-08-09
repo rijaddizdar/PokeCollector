@@ -2,6 +2,7 @@ package com.rijad.pokecollector;
 
 
 import com.rijad.pokecollector.dto.OwnedCardDto;
+import com.rijad.pokecollector.dto.SetCompletionDto;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -73,5 +74,10 @@ public class CollectionService {
         OwnedCard ownedCard=ownedCardRepository.findByOwnerIdAndId(ownerId,ownedCardId)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "The card was not found: " + ownedCardId));
         ownedCardRepository.delete(ownedCard);
+    }
+    public List<SetCompletionDto> getSetCompletions(int ownerId) {
+        ownerRepository.findById(ownerId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found: " + ownerId));
+        return ownedCardRepository.findSetCompletion(ownerId);
     }
 }
