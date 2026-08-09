@@ -2,6 +2,8 @@ package com.rijad.pokecollector;
 
 
 import com.rijad.pokecollector.dto.CardSummaryDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +24,8 @@ public class CardController {
         return cardImportService.importCard(externalId);
     }
     @GetMapping
-    public List<Card>  findAll(){
-        return cardRepository.findAll();
+    public Page<Card> findAll(Pageable pageable) {
+        return cardRepository.findAll(pageable);
     }
     @GetMapping("/{id}")
     public Card findById(@PathVariable Long id) {
