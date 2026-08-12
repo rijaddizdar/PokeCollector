@@ -1,0 +1,6 @@
+package com.rijad.pokecollector.owner;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OwnerRepository extends JpaRepository<Owner,Integer> {
+}
