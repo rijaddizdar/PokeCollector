@@ -10,9 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class PokecollectorApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(PokecollectorApplication.class, args);
 	}
-
 }
