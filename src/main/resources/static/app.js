@@ -1,6 +1,7 @@
 const cardsContainer = document.getElementById('cards')
 const resultsContainer = document.getElementById('results')
 const form = document.getElementById('form')
+const collectionContanier=document.getElementById('collections')
 
 function renderCards(cards, container) {
     container.textContent = ''
@@ -29,6 +30,19 @@ function renderCards(cards, container) {
         }
     }
 }
+function renderCollection(ownedCards, container){
+    container.textContent=''
+    for(const owned of ownedCards){
+        const el=document.createElement('p')
+        const price=owned.price ?? '-'
+        el.textContent=owned.pname + ' ' + owned.condition + ' ' + '$' + price + ' ' + owned.amountOfCards
+        container.appendChild(el)
+
+    }
+
+
+
+}
 fetch('/api/cards')
     .then(response => response.json())
     .then(data => renderCards(data.content, cardsContainer))
@@ -46,5 +60,12 @@ form.addEventListener('submit', (e) => {
         .then(cards => renderCards(cards, resultsContainer))
 
 
-
 })
+
+    fetch('/api/owners/1/cards')
+        .then(response=>response.json())
+        .then(collections=>renderCollection(collections,collectionContanier))
+
+    fetch('/api/owners/1/value')
+        .then(response=>response.json())
+        .then(value=>document.getElementById('totalval').textContent= JSON.stringify(value))
