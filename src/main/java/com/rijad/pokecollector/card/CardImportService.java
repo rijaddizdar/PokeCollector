@@ -69,7 +69,10 @@ public class CardImportService {
             }
             if(variant!=null){
                 price=variant.marketPrice();
-                card.setPriceUpdatedAt(Instant.now());
+                if (price!=null){
+                    card.setPrice(price);
+                    card.setPriceUpdatedAt(Instant.now());
+                }
             }
             for(Map.Entry<String,VariantDto> entry: tcg.getVariants().entrySet()){
                 String name=entry.getKey();
@@ -80,8 +83,10 @@ public class CardImportService {
                         .findFirst();
                 if(existing.isPresent()){
                     CardVariant existingVariant=existing.get();
-                    existingVariant.setPrice(incoming.marketPrice());
-                    existingVariant.setUpdatedPriceAt(Instant.now());
+                    if(incoming.marketPrice()!=null){
+                        existingVariant.setPrice(incoming.marketPrice());
+                        existingVariant.setUpdatedPriceAt(Instant.now());
+                    }
                 }
                 else{
                     CardVariant newVariant=new CardVariant(card,name,incoming.marketPrice(),Instant.now());
@@ -90,7 +95,6 @@ public class CardImportService {
             }
 
         }
-        card.setPrice(price);
         if(dto.set()!=null){
             card.setSet(toSet(dto.set()));
         }
