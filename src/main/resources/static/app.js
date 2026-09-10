@@ -25,7 +25,9 @@ function renderCards(cards, container) {
         const params = new URLSearchParams({externalId: id, amount: amountInput.value, condition:'NM'})
         fetch('/api/owners/1/cards?'+params,{method:'POST'})
             .then(response=> {console.log(response.ok, response.status)
+            if(response.ok){
             loadCollection()
+            }
             })
 
             })
@@ -45,9 +47,21 @@ function renderCollection(ownedCards, container){
         const price=owned.price ?? '-'
         el.textContent=owned.pname + ' ' + owned.condition + ' ' + '$' + price + ' ' + owned.amountOfCards
         container.appendChild(el)
+        const elB=document.createElement('button')
+        elB.textContent='Remove from Collection'
+        container.appendChild(elB)
 
-    }
-}
+        elB.addEventListener('click', () => {
+                fetch('/api/owners/1/cards/' + owned.id, {method:'DELETE'})
+                    .then(response=> {console.log(response.ok, response.status)
+                    if(response.ok){
+                    loadCollection()
+                    }
+                    })
+
+
+    })
+}}
 function loadCollection(){
     fetch('/api/owners/1/cards')
         .then(response=>response.json())
