@@ -42,4 +42,8 @@ public class Owner {
     public String getUsername() {
         return username;
     }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 }
