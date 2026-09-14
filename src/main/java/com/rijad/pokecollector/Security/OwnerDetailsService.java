@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OwnerDetailsService implements UserDetailsService {
-    OwnerRepository ownerRepository;
+    final OwnerRepository ownerRepository;
 
     public OwnerDetailsService(OwnerRepository ownerRepository) {
         this.ownerRepository = ownerRepository;

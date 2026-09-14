@@ -30,7 +30,8 @@ public class CollectionService {
         this.cardRepository = cardRepository;
         this.cardImportService = cardImportService;
     }
-    public void addToCollection(int ownerId, String externalId, int amount, Condition condition) {
+    public void addToCollection(int ownerId, String externalId, int amount, Condition condition, String username) {
+        requireOwner(ownerId,username);
         Owner owner = ownerRepository.findById(ownerId)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found: " + ownerId));
         Card card= cardImportService.importCard(externalId);
@@ -45,7 +46,8 @@ public class CollectionService {
             ownedCardRepository.save(ownedCard);
         }
     }
-    public Double totalValue(int ownerId) {
+    public Double totalValue(int ownerId,String username) {
+        requireOwner(ownerId,username);
         List<OwnedCard> ownedCards = ownedCardRepository.findByOwnerId(ownerId);
         double total = 0.0;
         for (OwnedCard ownedCard : ownedCards) {
@@ -56,7 +58,8 @@ public class CollectionService {
         }
         return total;
     }
-    public List<OwnedCardDto> getOwnedCards(int ownerId) {
+    public List<OwnedCardDto> getOwnedCards(int ownerId, String username) {
+        requireOwner(ownerId,username);
         List<OwnedCard> ownedCards = ownedCardRepository.findByOwnerId(ownerId);
         List<OwnedCardDto> ownedCardDtos = new ArrayList<>();
         for (OwnedCard ownedCard : ownedCards) {
@@ -69,20 +72,29 @@ public class CollectionService {
         return ownedCardDtos;
     }
     @Transactional
-    public void updateCardAmount(int ownerId, int ownedCardId, int amount){
+    public void updateCardAmount(int ownerId, int ownedCardId, int amount,String username) {
+        requireOwner(ownerId,username);
         OwnedCard ownedCard=ownedCardRepository.findByOwnerIdAndId(ownerId,ownedCardId)
                         .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "You don`t own this card: " + ownedCardId));
         ownedCard.setAmountOfCards(amount);
     }
 
-    public void deleteOwnedCard(int ownerId, int ownedCardId){
+    public void deleteOwnedCard(int ownerId, int ownedCardId, String username) {
+        requireOwner(ownerId,username);
         OwnedCard ownedCard=ownedCardRepository.findByOwnerIdAndId(ownerId,ownedCardId)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "The card was not found: " + ownedCardId));
         ownedCardRepository.delete(ownedCard);
     }
-    public List<SetCompletionDto> getSetCompletions(int ownerId) {
+    public List<SetCompletionDto> getSetCompletions(int ownerId,String username) {
+        requireOwner(ownerId,username);
         ownerRepository.findById(ownerId)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found: " + ownerId));
         return ownedCardRepository.findSetCompletion(ownerId);
+    }
+    private void requireOwner(int ownerId, String username) {
+        Owner owner=ownerRepository.findByUsername(username).orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED,"You do not have access to these cards"));
+        if(ownerId!=owner.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"You do not have access to these cards");
+        }
     }
 }
