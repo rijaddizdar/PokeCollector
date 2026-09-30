@@ -2,6 +2,7 @@ const cardsContainer = document.getElementById('cards')
 const resultsContainer = document.getElementById('results')
 const form = document.getElementById('form')
 const collectionContanier=document.getElementById('collections')
+const form2=document.getElementById('form2')
 
 function renderCards(cards, container) {
     container.textContent = ''
@@ -64,12 +65,22 @@ function renderCollection(ownedCards, container){
 }}
 function loadCollection(){
     fetch('/api/owners/1/cards')
-        .then(response=>response.json())
-        .then(collections=>renderCollection(collections,collectionContanier))
+        .then(response=>{
+        if (response.ok){
+            return response.json()
+        }
+            return null
+        })
+        .then(collections=>{if(collections){renderCollection(collections,collectionContanier)}})
 
     fetch('/api/owners/1/value')
-        .then(response=>response.json())
-        .then(value=>document.getElementById('totalval').textContent= JSON.stringify(value))
+        .then(response=>{
+        if (response.ok){
+            return response.json()
+        }
+            return null
+        })
+        .then(value=>{if(value!==null){document.getElementById('totalval').textContent= JSON.stringify(value)}})
 
 }
 fetch('/api/cards')
@@ -87,6 +98,18 @@ form.addEventListener('submit', (e) => {
     fetch('/api/cards/search?' + params)
         .then(response => response.json())
         .then(cards => renderCards(cards, resultsContainer))
+})
+
+form2.addEventListener('submit', (e)=>{
+    e.preventDefault()
+    const username=document.getElementById('username').value
+    const password=document.getElementById('password').value
+
+    const parms=new URLSearchParams({username: username,password:password})
+    fetch('/login',{method:'POST',body:parms})
+      .then(()=>loadCollection())
+
+
 })
 loadCollection()
 

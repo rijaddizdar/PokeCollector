@@ -18,13 +18,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/cards/**").permitAll()
                 .requestMatchers(HttpMethod.GET,"/","/index.html","/app.js").permitAll()
                 .anyRequest().authenticated());
-        http.httpBasic(Customizer.withDefaults());
+        http.formLogin(Customizer.withDefaults());
         http.csrf((csrf -> csrf.disable()));
         return http.build();
     }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-
     }
 }
